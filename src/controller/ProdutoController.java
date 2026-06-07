@@ -179,4 +179,8 @@ public class ProdutoController {
 
         view.produtoNaoEncontrado();
     }
+
+    public List<Produto> getProdutos() {
+        return produtos;
+    }
 }

@@ -147,4 +147,8 @@ public class ClienteController {
 
         view.clienteNaoEncontrado();
     }
+
+    public List<Cliente> getClientes() {
+        return clientes;
+    }
 }

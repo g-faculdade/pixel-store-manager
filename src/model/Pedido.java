@@ -1,4 +1,5 @@
 package model;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -62,5 +63,21 @@ public class Pedido {
 
     public void setValorTotal(double valorTotal) {
         this.valorTotal = valorTotal;
+    }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
+        StringBuilder sb = new StringBuilder();
+        sb.append("ID: ").append(id);
+        sb.append("\nData: ").append(sdf.format(dataPedido));
+        sb.append("\nCliente: ").append(cliente.getNome());
+        sb.append("\nProdutos:");
+        for (Produto p : produtos) {
+            sb.append("\n  - ").append(p.getNome())
+              .append(String.format(" (R$ %.2f)", p.calcularPrecoFinal()));
+        }
+        sb.append(String.format("\nValor Total: R$ %.2f", valorTotal));
+        return sb.toString();
     }
 }

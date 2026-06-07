@@ -17,7 +17,7 @@ public class MenuController {
         this.view = new MenuPrincipalView();
         this.produtoController = new ProdutoController(scanner);
         this.clienteController = new ClienteController(scanner);
-        this.pedidoController = new PedidoController(scanner);
+        this.pedidoController = new PedidoController(scanner, clienteController, produtoController);
     }
 
     public void iniciar() {
