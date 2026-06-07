@@ -9,11 +9,6 @@ public class ProdutoFisico extends Produto implements FretavelInterface, Calcula
     }
 
     @Override
-    public double calcularPrecoFinal() {
-        return getPreco() + taxaFrete;
-    }
-
-    @Override
     public double calcularFrete() {
         return taxaFrete;
     }
