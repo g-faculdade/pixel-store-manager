@@ -1,6 +1,6 @@
 package model;
 
-public class ProdutoFisico extends Produto {
+public class ProdutoFisico extends Produto implements FretavelInterface, CalculavelInterface {
     private double taxaFrete;
 
     public ProdutoFisico(int id, String nome, double preco, int quantidadeEstoque, double taxaFrete) {
@@ -11,6 +11,16 @@ public class ProdutoFisico extends Produto {
     @Override
     public double calcularPrecoFinal() {
         return getPreco() + taxaFrete;
+    }
+
+    @Override
+    public double calcularFrete() {
+        return taxaFrete;
+    }
+
+    @Override
+    public double calcularPrecoFinal() {
+        return getPreco() + calcularFrete();
     }
 
     public double getTaxaFrete() {
