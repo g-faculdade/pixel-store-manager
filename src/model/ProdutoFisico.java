@@ -25,4 +25,15 @@ public class ProdutoFisico extends Produto implements FretavelInterface, Calcula
     public void setTaxaFrete(double taxaFrete) {
         this.taxaFrete = taxaFrete;
     }
+
+    @Override
+    public String toString() {
+        return "ID: " + getId()
+                + "\nNome: " + getNome()
+                + String.format("\nPreco: R$ %.2f", getPreco())
+                + "\nEstoque: " + getQuantidadeEstoque()
+                + String.format("\nFrete: R$ %.2f", taxaFrete)
+                + String.format("\nPreco Final: R$ %.2f", calcularPrecoFinal())
+                + "\nTipo: Fisico";
+    }
 }
