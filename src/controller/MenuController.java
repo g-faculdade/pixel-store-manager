@@ -1,0 +1,56 @@
+package controller;
+
+import view.MenuPrincipalView;
+import java.util.Scanner;
+
+public class MenuController {
+
+    private final Scanner scanner;
+
+    private MenuPrincipalView view;
+    private ProdutoController produtoController;
+    private ClienteController clienteController;
+    private PedidoController pedidoController;
+
+    public MenuController() {
+        this.scanner = new Scanner(System.in);
+        this.view = new MenuPrincipalView();
+        this.produtoController = new ProdutoController(scanner);
+        this.clienteController = new ClienteController(scanner);
+        this.pedidoController = new PedidoController(scanner);
+    }
+
+    public void iniciar() {
+
+        int opcao;
+
+        do {
+            view.exibirMenu();
+
+            opcao = scanner.nextInt();
+
+            switch (opcao) {
+
+                case 1:
+                    produtoController.iniciar();
+                    break;
+
+                case 2:
+                    clienteController.iniciar();
+                    break;
+
+                case 3:
+                    pedidoController.iniciar();
+                    break;
+
+                case 0:
+                    System.out.println("Saindo...");
+                    break;
+
+                default:
+                    System.out.println("Opção inválida");
+            }
+
+        } while (opcao != 0);
+    }
+}
