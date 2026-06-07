@@ -1,12 +1,18 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+
+import model.Cliente;
 import view.ClienteView;
 
 public class ClienteController {
 
     private final Scanner scanner;
     private final ClienteView view;
+    private List<Cliente> clientes = new ArrayList<>();
+    private int proximoId = 1;
 
     public ClienteController(Scanner scanner) {
         this.scanner = scanner;
@@ -53,18 +59,92 @@ public class ClienteController {
     }
 
     private void cadastrarCliente() {
-        System.out.println("Cadastrar Cliente");
+        view.lerNome();
+        String nome = scanner.nextLine();
+
+        view.lerCpf();
+        String cpf = scanner.nextLine();
+
+        view.lerEmail();
+        String email = scanner.nextLine();
+
+        view.lerEndereco();
+        String endereco = scanner.nextLine();
+
+        Cliente cliente = new Cliente(proximoId, nome, cpf, email, endereco);
+        clientes.add(cliente);
+        proximoId++;
+
+        view.clienteCadastrado();
     }
 
     private void listarClientes() {
-        System.out.println("Listar Clientes");
+        if (clientes.isEmpty()){
+            view.isEmpty();
+            return;
+        }
+        for (Cliente cliente : clientes){
+            view.exibirCliente(cliente);
+        }
     }
 
     private void editarCliente() {
-        System.out.println("Editar Cliente");
+        if (clientes.isEmpty()){
+            view.isEmpty();
+            return;
+        }
+        listarClientes();
+
+        view.idCliente();
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        for (Cliente cliente : clientes) {
+            if (cliente.getId() == id) {
+                view.lerNome();
+                String nome = scanner.nextLine();
+
+                view.lerCpf();
+                String cpf = scanner.nextLine();
+
+                view.lerEmail();
+                String email = scanner.nextLine();
+
+                view.lerEndereco();
+                String endereco = scanner.nextLine();
+
+                cliente.setNome(nome);
+                cliente.setCpf(cpf);
+                cliente.setEmail(email);
+                cliente.setEndereco(endereco);
+
+                view.clienteEditado();
+                return;
+            }
+            view.clienteNaoEncontrado();
+        }
     }
 
     private void deletarCliente() {
-        System.out.println("Deletar Cliente");
+        if (clientes.isEmpty()) {
+            view.isEmpty();
+            return;
+        }
+
+        listarClientes();
+
+        view.idCliente();
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        for (Cliente cliente : clientes) {
+            if (cliente.getId() == id) {
+                clientes.remove(cliente);
+                view.clienteDeletado();
+                return;
+            }
+        }
+
+        view.clienteNaoEncontrado();
     }
 }

@@ -15,4 +15,9 @@ public class Cliente extends Pessoa {
     public void setEndereco(String endereco) {
         this.endereco = endereco;
     }
+
+    @Override
+    public String toString(){
+        return "ID: " + getId() + "\nNome: " + getNome() + "\nCPF: " + getCpf() + "\nEmail: " + getEmail() + "\nEndereço: " + getEndereco();
+    }
 }
