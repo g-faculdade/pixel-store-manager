@@ -21,6 +21,7 @@ public class ClienteController {
             view.exibirMenu();
 
             opcao = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcao) {
 

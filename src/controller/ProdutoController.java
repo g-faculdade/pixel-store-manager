@@ -21,6 +21,7 @@ public class ProdutoController {
             view.exibirMenu();
 
             opcao = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcao) {
 

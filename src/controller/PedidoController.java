@@ -21,6 +21,7 @@ public class PedidoController {
             view.exibirMenu();
 
             opcao = scanner.nextInt();
+            scanner.nextLine();
 
             switch (opcao) {
 
