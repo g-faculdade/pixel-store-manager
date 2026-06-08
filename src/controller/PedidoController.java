@@ -8,6 +8,7 @@ import java.util.Scanner;
 import model.Cliente;
 import model.Pedido;
 import model.Produto;
+import util.Serializador;
 import view.ClienteView;
 import view.MenuView;
 import view.PedidoView;
@@ -22,8 +23,8 @@ public class PedidoController {
     private ProdutoView produtoView;
     private ClienteController clienteController;
     private ProdutoController produtoController;
-    private List<Pedido> pedidos = new ArrayList<>();
-    private int proximoId = 1;
+    private List<Pedido> pedidos;
+    private int proximoId;
 
     public PedidoController(Scanner scanner, ClienteController clienteController, ProdutoController produtoController) {
         this.scanner = scanner;
@@ -33,6 +34,18 @@ public class PedidoController {
         this.produtoView = new ProdutoView();
         this.clienteController = clienteController;
         this.produtoController = produtoController;
+        this.pedidos = (List<Pedido>) Serializador.carregar("pedido.ser");
+        this.proximoId = calcularProximoId();
+    }
+
+    private int calcularProximoId() {
+        int maiorId = 0;
+        for (Pedido pedido : pedidos) {
+            if (pedido.getId() > maiorId) {
+                maiorId = pedido.getId();
+            }
+        }
+        return maiorId + 1;
     }
 
     public void iniciar() {
@@ -105,6 +118,7 @@ public class PedidoController {
 
         pedidos.add(new Pedido(proximoId, new Date(), clienteSelecionado, produtosSelecionados));
         proximoId++;
+        Serializador.salvar("pedido.ser", pedidos);
         view.pedidoCriado();
     }
 
@@ -155,6 +169,7 @@ public class PedidoController {
                 pedido.setProdutos(novosProdutos);
                 pedido.setValorTotal(pedido.calcularValorTotal());
 
+                Serializador.salvar("pedido.ser", pedidos);
                 view.pedidoEditado();
                 return;
             }
@@ -177,6 +192,7 @@ public class PedidoController {
         for (Pedido pedido : pedidos) {
             if (pedido.getId() == id) {
                 pedidos.remove(pedido);
+                Serializador.salvar("pedido.ser", pedidos);
                 view.pedidoDeletado();
                 return;
             }

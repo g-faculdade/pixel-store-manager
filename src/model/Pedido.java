@@ -1,9 +1,10 @@
 package model;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class Pedido {
+public class Pedido implements Serializable {
     private int id;
     private Date dataPedido;
     private Cliente cliente;

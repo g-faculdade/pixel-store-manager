@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import model.Pedido;
 import model.Produto;
 import model.ProdutoDigital;
 import model.ProdutoFisico;
+import util.Serializador;
 import view.MenuView;
 import view.ProdutoView;
 
@@ -15,13 +17,25 @@ public class ProdutoController {
     private Scanner scanner;
     private ProdutoView view;
     private MenuView menuView;
-    private List<Produto> produtos = new ArrayList<>();
-    private int proximoId = 1;
+    private List<Produto> produtos;
+    private int proximoId;
 
     public ProdutoController(Scanner scanner) {
         this.scanner = scanner;
         this.view = new ProdutoView();
         this.menuView = new MenuView();
+        this.produtos = (List<Produto>) Serializador.carregar("produto.ser");
+        this.proximoId = calcularProximoId();
+    }
+
+    private int calcularProximoId() {
+        int maiorId = 0;
+        for (Produto produto : produtos) {
+            if (produto.getId() > maiorId) {
+                maiorId = produto.getId();
+            }
+        }
+        return maiorId + 1;
     }
 
     public void iniciar() {
@@ -85,6 +99,7 @@ public class ProdutoController {
         produtos.add(produto);
         proximoId++;
 
+        Serializador.salvar("produto.ser", produtos);
         view.produtoFisicoCadastrado();
     }
 
@@ -103,6 +118,7 @@ public class ProdutoController {
         produtos.add(produto);
         proximoId++;
 
+        Serializador.salvar("produto.ser", produtos);
         view.produtoDigitalCadastrado();
     }
 
@@ -152,6 +168,7 @@ public class ProdutoController {
                     ((ProdutoFisico) produto).setTaxaFrete(taxaFrete);
                 }
 
+                Serializador.salvar("produto.ser", produtos);
                 view.produtoEditado();
                 return;
             }
@@ -175,6 +192,7 @@ public class ProdutoController {
         for (Produto produto : produtos) {
             if (produto.getId() == id) {
                 produtos.remove(produto);
+                Serializador.salvar("produto.ser", produtos);
                 view.produtoDeletado();
                 return;
             }
