@@ -6,17 +6,20 @@ import java.util.Scanner;
 
 import model.Cliente;
 import view.ClienteView;
+import view.MenuView;
 
 public class ClienteController {
 
-    private final Scanner scanner;
-    private final ClienteView view;
+    private Scanner scanner;
+    private ClienteView view;
+    private MenuView menuView;
     private List<Cliente> clientes = new ArrayList<>();
     private int proximoId = 1;
 
     public ClienteController(Scanner scanner) {
         this.scanner = scanner;
         this.view = new ClienteView();
+        this.menuView = new MenuView();
     }
 
     public void iniciar() {
@@ -48,11 +51,11 @@ public class ClienteController {
                     break;
 
                 case 0:
-                    System.out.println("Voltando...");
+                    menuView.sair();
                     break;
 
                 default:
-                    System.out.println("Opção inválida");
+                    menuView.opcaoInvalida();
             }
 
         } while (opcao != 0);
@@ -121,8 +124,8 @@ public class ClienteController {
                 view.clienteEditado();
                 return;
             }
-            view.clienteNaoEncontrado();
         }
+        view.clienteNaoEncontrado();
     }
 
     private void deletarCliente() {

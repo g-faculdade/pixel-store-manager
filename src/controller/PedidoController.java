@@ -8,20 +8,29 @@ import java.util.Scanner;
 import model.Cliente;
 import model.Pedido;
 import model.Produto;
+import view.ClienteView;
+import view.MenuView;
 import view.PedidoView;
+import view.ProdutoView;
 
 public class PedidoController {
 
-    private final Scanner scanner;
-    private final PedidoView view;
-    private final ClienteController clienteController;
-    private final ProdutoController produtoController;
+    private Scanner scanner;
+    private PedidoView view;
+    private MenuView menuView;
+    private ClienteView clienteView;
+    private ProdutoView produtoView;
+    private ClienteController clienteController;
+    private ProdutoController produtoController;
     private List<Pedido> pedidos = new ArrayList<>();
     private int proximoId = 1;
 
     public PedidoController(Scanner scanner, ClienteController clienteController, ProdutoController produtoController) {
         this.scanner = scanner;
         this.view = new PedidoView();
+        this.menuView = new MenuView();
+        this.clienteView = new ClienteView();
+        this.produtoView = new ProdutoView();
         this.clienteController = clienteController;
         this.produtoController = produtoController;
     }
@@ -55,13 +64,12 @@ public class PedidoController {
                     break;
 
                 case 0:
-                    System.out.println("Voltando...");
+                    menuView.sair();
                     break;
 
                 default:
-                    System.out.println("Opção inválida");
+                    menuView.opcaoInvalida();
             }
-
         } while (opcao != 0);
     }
 
@@ -79,68 +87,24 @@ public class PedidoController {
             return;
         }
 
-        // Exibe clientes disponíveis
-        for (Cliente cliente : clientes) {
-            System.out.println("\n" + cliente);
-        }
-
-        view.idCliente();
-        int idCliente = scanner.nextInt();
-        scanner.nextLine();
-
-        Cliente clienteSelecionado = null;
-        for (Cliente c : clientes) {
-            if (c.getId() == idCliente) {
-                clienteSelecionado = c;
-                break;
-            }
-        }
+        listarTodosClientes(clientes);
+        Cliente clienteSelecionado = selecionarCliente(clientes);
 
         if (clienteSelecionado == null) {
             view.clienteNaoEncontrado();
             return;
         }
 
-        // Exibe produtos disponíveis
-        for (Produto produto : produtos) {
-            System.out.println("\n" + produto);
-        }
-
-        List<Produto> produtosSelecionados = new ArrayList<>();
-
-        int idProduto;
-        do {
-            view.idProduto();
-            idProduto = scanner.nextInt();
-            scanner.nextLine();
-
-            if (idProduto == 0) break;
-
-            Produto produtoEncontrado = null;
-            for (Produto p : produtos) {
-                if (p.getId() == idProduto) {
-                    produtoEncontrado = p;
-                    break;
-                }
-            }
-
-            if (produtoEncontrado == null) {
-                view.produtoNaoEncontrado();
-            } else {
-                produtosSelecionados.add(produtoEncontrado);
-            }
-
-        } while (true);
+        listarTodosProdutos(produtos);
+        List<Produto> produtosSelecionados = selecionarProdutos(produtos);
 
         if (produtosSelecionados.isEmpty()) {
             view.nenhumProdutoSelecionado();
             return;
         }
 
-        Pedido pedido = new Pedido(proximoId, new Date(), clienteSelecionado, produtosSelecionados);
-        pedidos.add(pedido);
+        pedidos.add(new Pedido(proximoId, new Date(), clienteSelecionado, produtosSelecionados));
         proximoId++;
-
         view.pedidoCriado();
     }
 
@@ -162,7 +126,6 @@ public class PedidoController {
         }
 
         listarPedidos();
-
         view.idPedido();
         int id = scanner.nextInt();
         scanner.nextLine();
@@ -172,58 +135,16 @@ public class PedidoController {
                 List<Cliente> clientes = clienteController.getClientes();
                 List<Produto> produtos = produtoController.getProdutos();
 
-                // Selecionar novo cliente
-                for (Cliente cliente : clientes) {
-                    System.out.println("\n" + cliente);
-                }
-
-                view.idCliente();
-                int idCliente = scanner.nextInt();
-                scanner.nextLine();
-
-                Cliente novoCliente = null;
-                for (Cliente c : clientes) {
-                    if (c.getId() == idCliente) {
-                        novoCliente = c;
-                        break;
-                    }
-                }
+                listarTodosClientes(clientes);
+                Cliente novoCliente = selecionarCliente(clientes);
 
                 if (novoCliente == null) {
                     view.clienteNaoEncontrado();
                     return;
                 }
 
-                // Selecionar novos produtos
-                for (Produto produto : produtos) {
-                    System.out.println("\n" + produto);
-                }
-
-                List<Produto> novosProdutos = new ArrayList<>();
-
-                int idProduto;
-                do {
-                    view.idProduto();
-                    idProduto = scanner.nextInt();
-                    scanner.nextLine();
-
-                    if (idProduto == 0) break;
-
-                    Produto produtoEncontrado = null;
-                    for (Produto p : produtos) {
-                        if (p.getId() == idProduto) {
-                            produtoEncontrado = p;
-                            break;
-                        }
-                    }
-
-                    if (produtoEncontrado == null) {
-                        view.produtoNaoEncontrado();
-                    } else {
-                        novosProdutos.add(produtoEncontrado);
-                    }
-
-                } while (true);
+                listarTodosProdutos(produtos);
+                List<Produto> novosProdutos = selecionarProdutos(produtos);
 
                 if (novosProdutos.isEmpty()) {
                     view.nenhumProdutoSelecionado();
@@ -249,7 +170,6 @@ public class PedidoController {
         }
 
         listarPedidos();
-
         view.idPedido();
         int id = scanner.nextInt();
         scanner.nextLine();
@@ -263,5 +183,57 @@ public class PedidoController {
         }
 
         view.pedidoNaoEncontrado();
+    }
+
+    private void listarTodosClientes(List<Cliente> clientes) {
+        for (Cliente cliente : clientes) {
+            clienteView.exibirCliente(cliente);
+        }
+    }
+
+    private void listarTodosProdutos(List<Produto> produtos) {
+        for (Produto produto : produtos) {
+            produtoView.exibirProduto(produto);
+        }
+    }
+
+    private Cliente selecionarCliente(List<Cliente> clientes) {
+        view.idCliente();
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        for (Cliente c : clientes) {
+            if (c.getId() == id) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    private List<Produto> selecionarProdutos(List<Produto> produtos) {
+        List<Produto> selecionados = new ArrayList<>();
+        int idProduto;
+        do {
+            view.idProduto();
+            idProduto = scanner.nextInt();
+            scanner.nextLine();
+
+            if (idProduto == 0) {
+                break;
+            }
+
+            boolean encontrado = false;
+            for (Produto p : produtos) {
+                if (p.getId() == idProduto) {
+                    selecionados.add(p);
+                    encontrado = true;
+                    break;
+                }
+            }
+
+            if (!encontrado) view.produtoNaoEncontrado();
+
+        } while (true);
+        return selecionados;
     }
 }

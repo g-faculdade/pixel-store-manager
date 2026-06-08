@@ -7,18 +7,21 @@ import java.util.Scanner;
 import model.Produto;
 import model.ProdutoDigital;
 import model.ProdutoFisico;
+import view.MenuView;
 import view.ProdutoView;
 
 public class ProdutoController {
 
-    private final Scanner scanner;
-    private final ProdutoView view;
+    private Scanner scanner;
+    private ProdutoView view;
+    private MenuView menuView;
     private List<Produto> produtos = new ArrayList<>();
     private int proximoId = 1;
 
     public ProdutoController(Scanner scanner) {
         this.scanner = scanner;
         this.view = new ProdutoView();
+        this.menuView = new MenuView();
     }
 
     public void iniciar() {
@@ -54,11 +57,11 @@ public class ProdutoController {
                     break;
 
                 case 0:
-                    System.out.println("Voltando...");
+                    menuView.sair();
                     break;
 
                 default:
-                    System.out.println("Opção inválida");
+                    menuView.opcaoInvalida();
             }
 
         } while (opcao != 0);

@@ -1,20 +1,20 @@
 package controller;
 
-import view.MenuPrincipalView;
+import view.MenuView;
 import java.util.Scanner;
 
 public class MenuController {
 
-    private final Scanner scanner;
+    private Scanner scanner;
 
-    private MenuPrincipalView view;
+    private MenuView view;
     private ProdutoController produtoController;
     private ClienteController clienteController;
     private PedidoController pedidoController;
 
     public MenuController() {
         this.scanner = new Scanner(System.in);
-        this.view = new MenuPrincipalView();
+        this.view = new MenuView();
         this.produtoController = new ProdutoController(scanner);
         this.clienteController = new ClienteController(scanner);
         this.pedidoController = new PedidoController(scanner, clienteController, produtoController);
@@ -45,11 +45,11 @@ public class MenuController {
                     break;
 
                 case 0:
-                    System.out.println("Saindo...");
+                    view.sair();
                     break;
 
                 default:
-                    System.out.println("Opção inválida");
+                    view.opcaoInvalida();
             }
 
         } while (opcao != 0);

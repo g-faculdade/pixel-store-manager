@@ -1,6 +1,6 @@
 package view;
 
-public class MenuPrincipalView {
+public class MenuView {
     public void exibirMenu() {
         System.out.println("\n=============================");
         System.out.println("      LOJA DE VIDEO GAMES");
@@ -11,5 +11,13 @@ public class MenuPrincipalView {
         System.out.println("0 - Sair");
         System.out.println("=============================");
         System.out.print("Escolha uma opcao: ");
+    }
+
+    public void sair(){
+        System.out.println("Saindo...");
+    }
+
+    public void opcaoInvalida(){
+        System.out.println("Opção Invalida!");
     }
 }

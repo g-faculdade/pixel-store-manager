@@ -67,17 +67,14 @@ public class Pedido {
 
     @Override
     public String toString() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
-        StringBuilder sb = new StringBuilder();
-        sb.append("ID: ").append(id);
-        sb.append("\nData: ").append(sdf.format(dataPedido));
-        sb.append("\nCliente: ").append(cliente.getNome());
-        sb.append("\nProdutos:");
+        String produtosStr = "";
         for (Produto p : produtos) {
-            sb.append("\n  - ").append(p.getNome())
-              .append(String.format(" (R$ %.2f)", p.calcularPrecoFinal()));
+            produtosStr = produtosStr + "\n  - " + p.getNome() + String.format(" (R$ %.2f)", p.calcularPrecoFinal());
         }
-        sb.append(String.format("\nValor Total: R$ %.2f", valorTotal));
-        return sb.toString();
+        return "ID: " + id +
+                "\nData: " + dataPedido +
+                "\nCliente: " + cliente.getNome() +
+                "\nProdutos:" + produtosStr +
+                String.format("\nValor Total: R$ %.2f", valorTotal);
     }
 }
