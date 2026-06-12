@@ -1,8 +1,16 @@
 package view;
 
 import model.Cliente;
+import java.util.Scanner;
 
 public class ClienteView {
+
+    private Scanner scanner;
+
+    public ClienteView(Scanner scanner) {
+        this.scanner = scanner;
+    }
+
     public void exibirMenu() {
         System.out.println("\n=============================");
         System.out.println("      GERENCIAR CLIENTES");
@@ -16,47 +24,64 @@ public class ClienteView {
         System.out.print("Escolha uma opcao: ");
     }
 
-    public void idCliente(){
+    public int lerOpcao() {
+        int opcao = scanner.nextInt();
+        scanner.nextLine();
+        return opcao;
+    }
+
+    public int lerId() {
         System.out.print("Digite o ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        return id;
     }
 
-    public void lerNome(){
+    public String lerNome() {
         System.out.print("Nome: ");
+        return scanner.nextLine();
     }
 
-    public void lerCpf(){
+    public String lerCpf() {
         System.out.print("CPF: ");
+        return scanner.nextLine();
     }
 
-    public void lerEmail(){
+    public String lerEmail() {
         System.out.print("Email: ");
+        return scanner.nextLine();
     }
 
-    public void lerEndereco(){
+    public String lerEndereco() {
         System.out.print("Endereço: ");
-    }
-
-    public void clienteCadastrado(){
-        System.out.println("Cliente cadastrado com sucesso!");
+        return scanner.nextLine();
     }
 
     public void exibirCliente(Cliente cliente) {
         System.out.println("\n" + cliente);
     }
 
-    public void isEmpty(){
+    public void clienteCadastrado() {
+        System.out.println("Cliente cadastrado com sucesso!");
+    }
+
+    public void isEmpty() {
         System.out.println("Nenhum cliente cadastrado!");
     }
 
-    public void clienteEditado(){
-        System.out.println("Clienten editado com sucesso!");
+    public void clienteEditado() {
+        System.out.println("Cliente editado com sucesso!");
     }
 
-    public void clienteDeletado(){
+    public void clienteDeletado() {
         System.out.println("Cliente deletado com sucesso!");
     }
 
-    public void clienteNaoEncontrado(){
+    public void clienteNaoEncontrado() {
         System.out.println("Cliente não foi encontrado!");
+    }
+
+    public void erroAoCarregar() {
+        System.out.println("Nenhum cliente encontrado. Iniciando lista vazia.");
     }
 }

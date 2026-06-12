@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import model.Pedido;
 import model.Produto;
 import model.ProdutoDigital;
 import model.ProdutoFisico;
@@ -14,17 +13,23 @@ import view.ProdutoView;
 
 public class ProdutoController {
 
-    private Scanner scanner;
     private ProdutoView view;
     private MenuView menuView;
     private List<Produto> produtos;
     private int proximoId;
 
     public ProdutoController(Scanner scanner) {
-        this.scanner = scanner;
-        this.view = new ProdutoView();
-        this.menuView = new MenuView();
-        this.produtos = (List<Produto>) Serializador.carregar("produto.ser");
+        this.view = new ProdutoView(scanner);
+        this.menuView = new MenuView(scanner);
+
+        Object dados = Serializador.carregar("produto.ser");
+        if (dados == null) {
+            view.erroAoCarregar();
+            this.produtos = new ArrayList<>();
+        } else {
+            this.produtos = (List<Produto>) dados;
+        }
+
         this.proximoId = calcularProximoId();
     }
 
@@ -44,9 +49,7 @@ public class ProdutoController {
 
         do {
             view.exibirMenu();
-
-            opcao = scanner.nextInt();
-            scanner.nextLine();
+            opcao = view.lerOpcao();
 
             switch (opcao) {
 
@@ -82,18 +85,10 @@ public class ProdutoController {
     }
 
     private void cadastrarProdutoFisico() {
-        view.lerNome();
-        String nome = scanner.nextLine();
-
-        view.lerPreco();
-        double preco = scanner.nextDouble();
-
-        view.lerQuantidade();
-        int quantidade = scanner.nextInt();
-
-        view.lerTaxaFrete();
-        double taxaFrete = scanner.nextDouble();
-        scanner.nextLine();
+        String nome = view.lerNome();
+        double preco = view.lerPreco();
+        int quantidade = view.lerQuantidade();
+        double taxaFrete = view.lerTaxaFrete();
 
         ProdutoFisico produto = new ProdutoFisico(proximoId, nome, preco, quantidade, taxaFrete);
         produtos.add(produto);
@@ -104,15 +99,9 @@ public class ProdutoController {
     }
 
     private void cadastrarProdutoDigital() {
-        view.lerNome();
-        String nome = scanner.nextLine();
-
-        view.lerPreco();
-        double preco = scanner.nextDouble();
-
-        view.lerQuantidade();
-        int quantidade = scanner.nextInt();
-        scanner.nextLine();
+        String nome = view.lerNome();
+        double preco = view.lerPreco();
+        int quantidade = view.lerQuantidade();
 
         ProdutoDigital produto = new ProdutoDigital(proximoId, nome, preco, quantidade);
         produtos.add(produto);
@@ -141,30 +130,20 @@ public class ProdutoController {
 
         listarProdutos();
 
-        view.idProduto();
-        int id = scanner.nextInt();
-        scanner.nextLine();
+        int id = view.lerId();
 
         for (Produto produto : produtos) {
             if (produto.getId() == id) {
-                view.lerNome();
-                String nome = scanner.nextLine();
-
-                view.lerPreco();
-                double preco = scanner.nextDouble();
-
-                view.lerQuantidade();
-                int quantidade = scanner.nextInt();
-                scanner.nextLine();
+                String nome = view.lerNome();
+                double preco = view.lerPreco();
+                int quantidade = view.lerQuantidade();
 
                 produto.setNome(nome);
                 produto.setPreco(preco);
                 produto.setQuantidadeEstoque(quantidade);
 
                 if (produto instanceof ProdutoFisico) {
-                    view.lerTaxaFrete();
-                    double taxaFrete = scanner.nextDouble();
-                    scanner.nextLine();
+                    double taxaFrete = view.lerTaxaFrete();
                     ((ProdutoFisico) produto).setTaxaFrete(taxaFrete);
                 }
 
@@ -185,9 +164,7 @@ public class ProdutoController {
 
         listarProdutos();
 
-        view.idProduto();
-        int id = scanner.nextInt();
-        scanner.nextLine();
+        int id = view.lerId();
 
         for (Produto produto : produtos) {
             if (produto.getId() == id) {
@@ -203,5 +180,9 @@ public class ProdutoController {
 
     public List<Produto> getProdutos() {
         return produtos;
+    }
+
+    public ProdutoView getView() {
+        return view;
     }
 }

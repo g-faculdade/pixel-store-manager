@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,17 +11,23 @@ import view.MenuView;
 
 public class ClienteController {
 
-    private Scanner scanner;
     private ClienteView view;
     private MenuView menuView;
     private List<Cliente> clientes;
     private int proximoId;
 
     public ClienteController(Scanner scanner) {
-        this.scanner = scanner;
-        this.view = new ClienteView();
-        this.menuView = new MenuView();
-        this.clientes = (List<Cliente>) Serializador.carregar("clientes.ser");
+        this.view = new ClienteView(scanner);
+        this.menuView = new MenuView(scanner);
+
+        Object dados = Serializador.carregar("clientes.ser");
+        if (dados == null) {
+            view.erroAoCarregar();
+            this.clientes = new ArrayList<>();
+        } else {
+            this.clientes = (List<Cliente>) dados;
+        }
+
         this.proximoId = calcularProximoId();
     }
 
@@ -35,43 +42,45 @@ public class ClienteController {
     }
 
     public void iniciar() {
-
         int opcao;
 
         do {
             view.exibirMenu();
-            opcao = scanner.nextInt();
-            scanner.nextLine();
+            opcao = view.lerOpcao();
+
             switch (opcao) {
                 case 1:
                     cadastrarCliente();
                     break;
+
                 case 2:
                     listarClientes();
                     break;
+
                 case 3:
                     editarCliente();
                     break;
+
                 case 4:
                     deletarCliente();
                     break;
+
                 case 0:
                     menuView.sair();
                     break;
+
                 default:
                     menuView.opcaoInvalida();
             }
         } while (opcao != 0);
     }
+
     private void cadastrarCliente() {
-        view.lerNome();
-        String nome = scanner.nextLine();
-        view.lerCpf();
-        String cpf = scanner.nextLine();
-        view.lerEmail();
-        String email = scanner.nextLine();
-        view.lerEndereco();
-        String endereco = scanner.nextLine();
+        String nome = view.lerNome();
+        String cpf = view.lerCpf();
+        String email = view.lerEmail();
+        String endereco = view.lerEndereco();
+
         Cliente cliente = new Cliente(proximoId, nome, cpf, email, endereco);
         clientes.add(cliente);
         proximoId++;
@@ -81,47 +90,38 @@ public class ClienteController {
     }
 
     private void listarClientes() {
-        if (clientes.isEmpty()){
+        if (clientes.isEmpty()) {
             view.isEmpty();
             return;
         }
-        for (Cliente cliente : clientes){
+
+        for (Cliente cliente : clientes) {
             view.exibirCliente(cliente);
         }
     }
 
     private void editarCliente() {
-        if (clientes.isEmpty()){
+        if (clientes.isEmpty()) {
             view.isEmpty();
             return;
         }
 
         listarClientes();
-        view.idCliente();
-        int id = scanner.nextInt();
-        scanner.nextLine();
+        int id = view.lerId();
 
         for (Cliente cliente : clientes) {
             if (cliente.getId() == id) {
-                view.lerNome();
-                String nome = scanner.nextLine();
-                view.lerCpf();
-                String cpf = scanner.nextLine();
-                view.lerEmail();
-                String email = scanner.nextLine();
-                view.lerEndereco();
-                String endereco = scanner.nextLine();
-
-                cliente.setNome(nome);
-                cliente.setCpf(cpf);
-                cliente.setEmail(email);
-                cliente.setEndereco(endereco);
+                cliente.setNome(view.lerNome());
+                cliente.setCpf(view.lerCpf());
+                cliente.setEmail(view.lerEmail());
+                cliente.setEndereco(view.lerEndereco());
 
                 Serializador.salvar("clientes.ser", clientes);
                 view.clienteEditado();
                 return;
             }
         }
+
         view.clienteNaoEncontrado();
     }
 
@@ -132,9 +132,7 @@ public class ClienteController {
         }
 
         listarClientes();
-        view.idCliente();
-        int id = scanner.nextInt();
-        scanner.nextLine();
+        int id = view.lerId();
 
         for (Cliente cliente : clientes) {
             if (cliente.getId() == id) {
@@ -144,10 +142,15 @@ public class ClienteController {
                 return;
             }
         }
+
         view.clienteNaoEncontrado();
     }
 
     public List<Cliente> getClientes() {
         return clientes;
+    }
+
+    public ClienteView getView() {
+        return view;
     }
 }

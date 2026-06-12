@@ -1,8 +1,16 @@
 package view;
 
 import model.Produto;
+import java.util.Scanner;
 
 public class ProdutoView {
+
+    private Scanner scanner;
+
+    public ProdutoView(Scanner scanner) {
+        this.scanner = scanner;
+    }
+
     public void exibirMenu() {
         System.out.println("\n=============================");
         System.out.println("      GERENCIAR PRODUTOS");
@@ -17,24 +25,47 @@ public class ProdutoView {
         System.out.print("Escolha uma opcao: ");
     }
 
-    public void idProduto() {
+    public int lerOpcao() {
+        int opcao = scanner.nextInt();
+        scanner.nextLine();
+        return opcao;
+    }
+
+    public int lerId() {
         System.out.print("Digite o ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        return id;
     }
 
-    public void lerNome() {
+    public String lerNome() {
         System.out.print("Nome: ");
+        return scanner.nextLine();
     }
 
-    public void lerPreco() {
+    public double lerPreco() {
         System.out.print("Preco: ");
+        double preco = scanner.nextDouble();
+        scanner.nextLine();
+        return preco;
     }
 
-    public void lerQuantidade() {
+    public int lerQuantidade() {
         System.out.print("Quantidade em estoque: ");
+        int quantidade = scanner.nextInt();
+        scanner.nextLine();
+        return quantidade;
     }
 
-    public void lerTaxaFrete() {
+    public double lerTaxaFrete() {
         System.out.print("Taxa de frete: ");
+        double taxa = scanner.nextDouble();
+        scanner.nextLine();
+        return taxa;
+    }
+
+    public void exibirProduto(Produto produto) {
+        System.out.println("\n" + produto);
     }
 
     public void produtoFisicoCadastrado() {
@@ -43,10 +74,6 @@ public class ProdutoView {
 
     public void produtoDigitalCadastrado() {
         System.out.println("Produto digital cadastrado com sucesso!");
-    }
-
-    public void exibirProduto(Produto produto) {
-        System.out.println("\n" + produto);
     }
 
     public void isEmpty() {
@@ -63,5 +90,9 @@ public class ProdutoView {
 
     public void produtoNaoEncontrado() {
         System.out.println("Produto nao foi encontrado!");
+    }
+
+    public void erroAoCarregar() {
+        System.out.println("Nenhum produto encontrado. Iniciando lista vazia.");
     }
 }

@@ -1,6 +1,15 @@
 package view;
 
+import java.util.Scanner;
+
 public class MenuView {
+
+    private Scanner scanner;
+
+    public MenuView(Scanner scanner) {
+        this.scanner = scanner;
+    }
+
     public void exibirMenu() {
         System.out.println("\n=============================");
         System.out.println("      LOJA DE VIDEO GAMES");
@@ -13,11 +22,17 @@ public class MenuView {
         System.out.print("Escolha uma opcao: ");
     }
 
-    public void sair(){
+    public int lerOpcao() {
+        int opcao = scanner.nextInt();
+        scanner.nextLine();
+        return opcao;
+    }
+
+    public void sair() {
         System.out.println("Saindo...");
     }
 
-    public void opcaoInvalida(){
+    public void opcaoInvalida() {
         System.out.println("Opção Invalida!");
     }
 }

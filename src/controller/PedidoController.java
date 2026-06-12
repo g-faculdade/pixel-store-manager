@@ -9,32 +9,32 @@ import model.Cliente;
 import model.Pedido;
 import model.Produto;
 import util.Serializador;
-import view.ClienteView;
 import view.MenuView;
 import view.PedidoView;
-import view.ProdutoView;
 
 public class PedidoController {
 
-    private Scanner scanner;
     private PedidoView view;
     private MenuView menuView;
-    private ClienteView clienteView;
-    private ProdutoView produtoView;
     private ClienteController clienteController;
     private ProdutoController produtoController;
     private List<Pedido> pedidos;
     private int proximoId;
 
     public PedidoController(Scanner scanner, ClienteController clienteController, ProdutoController produtoController) {
-        this.scanner = scanner;
-        this.view = new PedidoView();
-        this.menuView = new MenuView();
-        this.clienteView = new ClienteView();
-        this.produtoView = new ProdutoView();
+        this.view = new PedidoView(scanner);
+        this.menuView = new MenuView(scanner);
         this.clienteController = clienteController;
         this.produtoController = produtoController;
-        this.pedidos = (List<Pedido>) Serializador.carregar("pedido.ser");
+
+        Object dados = Serializador.carregar("pedido.ser");
+        if (dados == null) {
+            view.erroAoCarregar();
+            this.pedidos = new ArrayList<>();
+        } else {
+            this.pedidos = (List<Pedido>) dados;
+        }
+
         this.proximoId = calcularProximoId();
     }
 
@@ -49,37 +49,28 @@ public class PedidoController {
     }
 
     public void iniciar() {
-
         int opcao;
 
         do {
             view.exibirMenu();
-
-            opcao = scanner.nextInt();
-            scanner.nextLine();
+            opcao = view.lerOpcao();
 
             switch (opcao) {
-
                 case 1:
                     criarPedido();
                     break;
-
                 case 2:
                     listarPedidos();
                     break;
-
                 case 3:
                     editarPedido();
                     break;
-
                 case 4:
                     deletarPedido();
                     break;
-
                 case 0:
                     menuView.sair();
                     break;
-
                 default:
                     menuView.opcaoInvalida();
             }
@@ -140,9 +131,7 @@ public class PedidoController {
         }
 
         listarPedidos();
-        view.idPedido();
-        int id = scanner.nextInt();
-        scanner.nextLine();
+        int id = view.lerIdPedido();
 
         for (Pedido pedido : pedidos) {
             if (pedido.getId() == id) {
@@ -185,9 +174,7 @@ public class PedidoController {
         }
 
         listarPedidos();
-        view.idPedido();
-        int id = scanner.nextInt();
-        scanner.nextLine();
+        int id = view.lerIdPedido();
 
         for (Pedido pedido : pedidos) {
             if (pedido.getId() == id) {
@@ -203,20 +190,18 @@ public class PedidoController {
 
     private void listarTodosClientes(List<Cliente> clientes) {
         for (Cliente cliente : clientes) {
-            clienteView.exibirCliente(cliente);
+            clienteController.getView().exibirCliente(cliente);
         }
     }
 
     private void listarTodosProdutos(List<Produto> produtos) {
         for (Produto produto : produtos) {
-            produtoView.exibirProduto(produto);
+            produtoController.getView().exibirProduto(produto);
         }
     }
 
     private Cliente selecionarCliente(List<Cliente> clientes) {
-        view.idCliente();
-        int id = scanner.nextInt();
-        scanner.nextLine();
+        int id = view.lerIdCliente();
 
         for (Cliente c : clientes) {
             if (c.getId() == id) {
@@ -228,15 +213,11 @@ public class PedidoController {
 
     private List<Produto> selecionarProdutos(List<Produto> produtos) {
         List<Produto> selecionados = new ArrayList<>();
-        int idProduto;
-        do {
-            view.idProduto();
-            idProduto = scanner.nextInt();
-            scanner.nextLine();
 
-            if (idProduto == 0) {
-                break;
-            }
+        do {
+            int idProduto = view.lerIdProduto();
+
+            if (idProduto == 0) break;
 
             boolean encontrado = false;
             for (Produto p : produtos) {
@@ -250,6 +231,7 @@ public class PedidoController {
             if (!encontrado) view.produtoNaoEncontrado();
 
         } while (true);
+
         return selecionados;
     }
 }
